@@ -35,8 +35,8 @@ public:
 	void ScanCode(void);
 	void OutPut(void);
 };
-Lexical_Analysis::Lexical_Analysis(int i)
-{
+
+Lexical_Analysis::Lexical_Analysis(int i) {
 	CharacterTable = new char*[MaxSizeOfTable];
 	line = 1;
 	row = 1;
@@ -54,8 +54,8 @@ Lexical_Analysis::Lexical_Analysis(int i)
 	strcpy_s(keyword[1], 5, "else");
 	strcpy_s(keyword[2], 5, "then");
 }
-void Lexical_Analysis::InputBuffer(int i)
-{
+
+void Lexical_Analysis::InputBuffer(int i) {
 	int j;
 	if (i == 1)
 	{
@@ -72,8 +72,8 @@ void Lexical_Analysis::InputBuffer(int i)
 		buffer2[j] = EOF;
 	}
 }
-void Lexical_Analysis::ScanCode(void)
-{
+
+void Lexical_Analysis::ScanCode(void) {
 	InputBuffer(1);
 	readptr = buffer1;
 	char c;
@@ -83,8 +83,7 @@ void Lexical_Analysis::ScanCode(void)
 	char temp[MaxSizeOfCharacter];//存标识符
 	char tempNum[32];//存无符号数
 	int len = 0;
-	while (1)
-	{
+	while (1) {
 		c = readptr[i];
 		if (c == EOF) {
 			if (i == MaxSizeOfBuffer) {
@@ -99,16 +98,15 @@ void Lexical_Analysis::ScanCode(void)
 					readptr = buffer1;
 					i = 0;
 					BufferModel = 1;
-				}//end if
+				}
 			}
 			else {
 				//处理最后一个单词
-				if (state != ER&&state != SKIP) {
+				if (state != ER && state != SKIP) {
 					if (state == ID) {
 						temp[len] = '\0';
 						int t, flag = 0;
-						for (t = 0; t < KeyWordNum; t++)
-						{
+						for (t = 0; t < KeyWordNum; t++) {
 							if (strcmp(temp, keyword[t]) == 0) {
 								cout << '<' << keyword[t] << ", -" << '>' << endl;//输出
 								kWordNum++;
@@ -116,45 +114,38 @@ void Lexical_Analysis::ScanCode(void)
 								return;
 							}
 						}
-						for (t = 0; t < Cnum&& flag == 0; t++)
-						{
+						
+						for (t = 0; t < Cnum&& flag == 0; t++) {
 							if (strcmp(temp, CharacterTable[t]) == 0)
 								flag = 1;
 						}
 						t--;
 
-						if (flag == 0)//字符表中无该单词
-						{
+						if (flag == 0)//字符表中无该单词 {
 							CharacterTable[Cnum] = new char[MaxSizeOfCharacter];
 							strcpy_s(CharacterTable[Cnum], strlen(temp) + 1, temp);
 							t = Cnum;
 							Cnum++;
 						}
 						cout << "ID" << ' ' << temp << ' ' << &CharacterTable[t] << endl;//输出
-					}
-					else if (state == NUM) {
+					} else if (state == NUM) {
 						cout << '<' << "num" << " , " << transfer(tempNum, len) << '>' << endl;
 						RealNum++;
-					}
-					else if (state == OP1) {
+					} else if (state == OP1) {
 						cout << '<' << "relop" << " , " << "<" << '>' << endl;//输出< 需要退格
 						RelationNum++;
-					}
-					else if (state == OP2) {
+					} else if (state == OP2) {
 						cout << '<' << "relop" << " , " << "<" << '>' << endl;
 						RelationNum++;
-					}
-					else if (state == OP3) {
+					} else if (state == OP3) {
 						cout << '<' << "relop" << " , " << ":" << '>' << endl;
 						ArithOpAndPunc++;
-					}
-					else if (state == output) {
+					} else if (state == output) {
 						cout << '<' << c << ' ' << " , " << '>' << endl;
 						ArithOpAndPunc++;
 					}
 
-				}
-				else {
+				} else {
 					Rcd[ErNum].line = line;
 					Rcd[ErNum].row = errorptr;
 					ErNum++;
@@ -177,27 +168,21 @@ void Lexical_Analysis::ScanCode(void)
 			else {
 				errorptr = row;
 				//startptr = i;	
-				if (c >= 'a'&&c <= 'z' || c >= 'A'&&c <= 'Z')
-				{
+				if (c >= 'a'&&c <= 'z' || c >= 'A'&&c <= 'Z') {
 					state = ID; len = 0;	i--;	row--;
-				}
-				else if (c >= '0'&&c <= '9')
-				{
+				} else if (c >= '0'&&c <= '9') {
 					state = NUM; len = 0; i--; row--;
-				}
-				else if (c == '<')
+				} else if (c == '<') {
 					state = OP1;
-				else if (c == '>')
+				} else if (c == '>') {
 					state = OP2;
-				else if (c == ':')
+				} else if (c == ':') {
 					state = OP3;
-				else if (c == '/') {
+				} else if (c == '/') {
 					state = MAYBENOTE;
-				}
-				else if (c == '=' || c == '+' || c == '-' || c == '*'
+				} else if (c == '=' || c == '+' || c == '-' || c == '*'
 					|| c == '(' || c == ')' || c == ',' || c == ';' ||
-					c == '\\' || c == '\''|| c=='{' || c=='}'||c=='"')
-				{
+					c == '\\' || c == '\''|| c=='{' || c=='}'||c=='"') {
 					state = output; i--; row--;
 				}
 				else state = ER;
@@ -211,14 +196,13 @@ void Lexical_Analysis::ScanCode(void)
 			else {
 				temp[len] = '\0';
 				int t, flag = 0, flag1 = 0;
-				for (t = 0; t < KeyWordNum && flag1 == 0; t++)//判断是否是关键字 
-				{
+				for (t = 0; t < KeyWordNum && flag1 == 0; t++)//判断是否是关键字 {
 					if (strcmp(temp, keyword[t]) == 0)
 						flag1 = 1;
 				}
+			
 				if (flag1 == 0)
-					for (t = 0; t < Cnum&& flag == 0; t++)
-					{
+					for (t = 0; t < Cnum&& flag == 0; t++) {
 						if (strcmp(temp, CharacterTable[t]) == 0)
 							flag = 1;
 					}
@@ -227,16 +211,17 @@ void Lexical_Analysis::ScanCode(void)
 				if (flag1 == 1) {
 					cout << '<' << keyword[t] << ", -" << '>' << endl;//输出
 					kWordNum++;
-				}
-				else if (flag == 0)//字符表中无该单词
-				{
+				} else if (flag == 0)//字符表中无该单词 {
 					CharacterTable[Cnum] = new char[MaxSizeOfCharacter];
 					strcpy_s(CharacterTable[Cnum], strlen(temp) + 1, temp);
 					t = Cnum;
 					Cnum++;
 				}
-				if (flag1 == 0)
+				
+				if (flag1 == 0) {
 					cout << '<' << "ID" << ' ' << temp << ' ' << &CharacterTable[t] << '>' << endl;//输出
+				}
+				
 				i--;//退格操作  在最后会有加操作，不会出现越界
 				row--;
 				LetterNum++;
@@ -248,16 +233,13 @@ void Lexical_Analysis::ScanCode(void)
 		case NUM: {
 			if (c >= '0'&&c <= '9') {
 				tempNum[len++] = c;
-			}
-			else if (c == '.') {
+			} else if (c == '.') {
 				tempNum[len++] = c;
 				state = S3;
-			}
-			else if (c == 'E') {
+			} else if (c == 'E') {
 				tempNum[len++] = c;
 				state = S5;
-			}
-			else {
+			} else {
 				Otp = transfer(tempNum, len);//函数将字符串转化为数					
 				cout << '<' << "num" << " , " << Otp << '>' << endl;//输出二元组
 				i--;//退格
@@ -271,12 +253,10 @@ void Lexical_Analysis::ScanCode(void)
 		case S3: {
 			if (c >= '0'&&c <= '9') {
 				tempNum[len++] = c;
-			}
-			else if (c == 'E') {
+			} else if (c == 'E') {
 				tempNum[len++] = c;
 				state = S5;
-			}
-			else {
+			} else {
 				Otp = transfer(tempNum, len);//函数将字符串转化为数					
 				cout << '<' << "real" << " , " << Otp << '>' << endl;//输出二元组
 				i--;//退格
@@ -291,12 +271,10 @@ void Lexical_Analysis::ScanCode(void)
 			if (c == '+' || c == '-') {
 				tempNum[len++] = c;
 				state = S6;
-			}
-			else if (c >= '0'&&c <= '9') {
+			} else if (c >= '0'&&c <= '9') {
 				tempNum[len++] = c;
 				state = S7;
-			}
-			else {
+			} else {
 				state = ER;
 				i--;
 				row--;
@@ -308,8 +286,7 @@ void Lexical_Analysis::ScanCode(void)
 			if (c >= '0'&&c <= '9') {
 				tempNum[len++] = c;
 				state = S7;
-			}
-			else {
+			} else {
 				i--;
 				row--;
 				state = ER;
@@ -319,8 +296,7 @@ void Lexical_Analysis::ScanCode(void)
 		case S7: {
 			if (c >= '0'&&c <= '9') {
 				tempNum[len++] = c;
-			}
-			else {
+			} else {
 				Otp = transfer(tempNum, len);//函数将字符串转化为数					
 				cout << '<' << "num" << " , " << Otp << '>' << endl;//输出二元组
 				i--;//退格
@@ -336,12 +312,10 @@ void Lexical_Analysis::ScanCode(void)
 			if (c == '=') {
 				cout << '<' << "relop" << " , " << "<=" << '>' << endl;//输出<= 无需退格
 				state = 0;
-			}
-			else if (c == '>') {
+			} else if (c == '>') {
 				cout << '<' << "relop" << " , " << "<>" << '>' << endl;//输出<> 无需退格
 				state = 0;
-			}
-			else {
+			} else {
 				cout << '<' << "relop" << " , " << "<" << '>' << endl;//输出< 需要退格
 				i--;
 				row--;
@@ -355,8 +329,7 @@ void Lexical_Analysis::ScanCode(void)
 			if (c == '=') {
 				cout << '<' << "relop" << " , " << ">=" << '>' << endl;//输出>= 无需退格
 				state = 0;
-			}
-			else {
+			} else {
 				cout << '<' << "relop" << " , " << ">" << '>' << endl;//输出> 需要退格
 				state = 0;
 				i--;
@@ -371,8 +344,7 @@ void Lexical_Analysis::ScanCode(void)
 				cout << '<' << "relop" << " , " << ":=" << '>' << endl;//输出：= 无需退格
 				state = 0;
 				Assignment++;
-			}
-			else {
+			} else {
 				cout << '<' << "relop" << " , " << ":" << '>' << endl;//输出: 需要退格
 				i--;
 				row--;
@@ -400,8 +372,7 @@ void Lexical_Analysis::ScanCode(void)
 		case SKIP: {
 			if (c == ' ') {
 				state = 0;
-			}
-			else if (c == '\n') {
+			} else if (c == '\n') {
 				state = 0;
 				line++; row = 0;
 			}
@@ -410,10 +381,9 @@ void Lexical_Analysis::ScanCode(void)
 		case MAYBENOTE: {
 			if (c == '*') {
 				state = NOTE1;
-			}
-			else if (c == '/')
+			} else if (c == '/') {
 				state = NOTE2;
-			else {
+			} else {
 				cout << '<' << '/' << " , " << '-' << '>' << endl;
 				state = 0;
 				i--;
@@ -424,8 +394,7 @@ void Lexical_Analysis::ScanCode(void)
 		case NOTE1: {
 			if (c == '*') {
 				state = MAYENDNOTE;
-			}
-			else if (c == '\n') {
+			} else if (c == '\n') {
 				line++;
 				row = 0;
 			}
@@ -442,8 +411,7 @@ void Lexical_Analysis::ScanCode(void)
 		case MAYENDNOTE: {
 			if (c == '/') {
 				state = 0;
-			}
-			else {
+			} else {
 				state = NOTE1;
 			}
 			break;
@@ -456,14 +424,13 @@ void Lexical_Analysis::ScanCode(void)
 void Lexical_Analysis::OutPut(void)
 {
 	cout << endl << "总错误数:" << ErNum << endl;
-	for (int t = 0; t<ErNum; t++)
-	{
+	for (int t = 0; t<ErNum; t++) {
 		cout << "Error!" << ' ' << "line:" << Rcd[t].line << ' ' << "row" << Rcd[t].row << endl;
 	}
 	cout << endl;
+	
 	cout << "符号表中单词如下:" << endl;
-	for (int t = 0; t<Cnum; t++)
-	{
+	for (int t = 0; t<Cnum; t++) {
 		cout << CharacterTable[t] << endl;
 	}
 	cout << endl;
