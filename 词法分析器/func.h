@@ -31,8 +31,7 @@
 using namespace std;
 double transfer(char *aim, int len);
 
-double transfer(char *aim, int len)
-{
+double transfer(char *aim, int len) {
 	double sum, sum1 = 0, sum2 = 0;
 	int i, j;
 	for (i = 0; i < len && aim[i] != '.'&&aim[i] != 'E'; i++) {
@@ -42,7 +41,7 @@ double transfer(char *aim, int len)
 		return sum1;
 
 	if (aim[i] == '.') {
-
+		
 		for (i = i + 1, j = 1; i < len &&aim[i] != 'E'; i++, j++) {
 			sum2 = sum2 + (double)(aim[i] - '0') / pow(10, j);
 		}
@@ -57,6 +56,7 @@ double transfer(char *aim, int len)
 		for (int p = i + 2; p < len; p++) {
 			t = t * 10 + aim[p] - '0';
 		}
+		
 		sum = sum / pow(10, t);
 		return sum;
 	}
@@ -65,6 +65,7 @@ double transfer(char *aim, int len)
 		for (int p = i + 1; p < len; p++) {
 			t = t * 10 + aim[p] - '0';
 		}
+		
 		sum = sum * pow(10, t);
 		return sum;
 	}
